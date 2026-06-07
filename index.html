@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Python Quiz - Master Python Daily</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #1e1e1e;
+            --bg-secondary: #252526;
+            --bg-tertiary: #2d2d30;
+            --border: #3e3e42;
+            --text-primary: #d4d4d4;
+            --text-secondary: #858585;
+            --python-blue: #4b8bbe;
+            --python-yellow: #ffd343;
+            --accent-green: #4ec9b0;
+            --accent-orange: #ce9178;
+            --accent-red: #f48771;
+            --accent-purple: #c586c0;
+            --shadow: rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(75, 139, 190, 0.03) 2px,
+                    rgba(75, 139, 190, 0.03) 4px
+                );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .python-logo {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            font-size: 3rem;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: slideDown 0.8s ease;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .logo-text {
+            background: linear-gradient(135deg, var(--python-blue), var(--python-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .python-icon {
+            font-size: 3rem;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .tagline .version {
+            color: var(--python-yellow);
+            font-weight: 500;
+        }
+
+        .stats-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.8s ease 0.2s backwards;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--python-blue);
+            border-radius: 8px;
+            padding: 1.75rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:nth-child(2) { border-left-color: var(--python-yellow); }
+        .stat-card:nth-child(3) { border-left-color: var(--accent-green); }
+        .stat-card:nth-child(4) { border-left-color: var(--accent-purple); }
+
+        .stat-card:hover {
+            transform: translateY(-4px) translateX(4px);
+            box-shadow: -4px 8px 24px var(--shadow);
+            border-left-width: 6px;
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            font-size: 1.8rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .stat-value {
+            font-size: 2.8rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-value.streak { color: var(--accent-orange); }
+        .stat-value.score { color: var(--python-yellow); }
+        .stat-value.accuracy { color: var(--accent-green); }
+        .stat-value.total { color: var(--python-blue); }
+
+        .editor-window {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.8s ease 0.4s backwards;
+        }
+
+        .editor-tab {
+            background: var(--bg-tertiary);
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .editor-tab .filename {
+            color: var(--python-yellow);
+            font-weight: 500;
+        }
+
+        .quiz-container {
+            padding: 2.5rem;
+        }
+
+        .progress-container {
+            margin-bottom: 2.5rem;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .question-number {
+            color: var(--python-blue);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .timer {
+            color: var(--accent-orange);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--python-blue), var(--python-yellow));
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+            animation: progressGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes progressGlow {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .difficulty-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .difficulty-beginner { 
+            background: rgba(78, 201, 176, 0.15); 
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+
+        .difficulty-intermediate { 
+            background: rgba(255, 211, 67, 0.15); 
+            color: var(--python-yellow);
+            border: 1px solid var(--python-yellow);
+        }
+
+        .difficulty-advanced { 
+            background: rgba(244, 135, 113, 0.15); 
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+        }
+
+        .topic-tag {
+            background: rgba(75, 139, 190, 0.15);
+            color: var(--python-blue);
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            border: 1px solid var(--python-blue);
+        }
+
+        .question {
+            font-size: 1.25rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .code-block {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--python-blue);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: 'Python';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.75rem;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .code-block .keyword { color: var(--python-blue); font-weight: 500; }
+        .code-block .string { color: var(--accent-green); }
+        .code-block .number { color: var(--accent-orange); }
+        .code-block .comment { color: var(--text-secondary); font-style: italic; }
+        .code-block .function { color: var(--python-yellow); }
+        .code-block .decorator { color: var(--accent-purple); }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .option-letter {
+            min-width: 32px;
+            height: 32px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .option-text {
+            flex: 1;
+        }
+
+        .option:hover {
+            border-color: var(--python-blue);
+            background: rgba(75, 139, 190, 0.08);
+            transform: translateX(8px);
+        }
+
+        .option:hover .option-letter {
+            background: var(--python-blue);
+            border-color: var(--python-blue);
+            color: var(--bg-primary);
+        }
+
+        .option.selected {
+            border-color: var(--python-blue);
+            background: rgba(75, 139, 190, 0.12);
+        }
+
+        .option.selected .option-letter {
+            background: var(--python-blue);
+            border-color: var(--python-blue);
+            color: var(--bg-primary);
+        }
+
+        .option.correct {
+            border-color: var(--accent-green);
+            background: rgba(78, 201, 176, 0.12);
+            animation: correctPulse 0.5s ease;
+        }
+
+        .option.correct .option-letter {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: var(--bg-primary);
+        }
+
+        .option.correct .option-letter::before {
+            content: '✓';
+        }
+
+        .option.incorrect {
+            border-color: var(--accent-red);
+            background: rgba(244, 135, 113, 0.12);
+            animation: shake 0.5s ease;
+        }
+
+        .option.incorrect .option-letter {
+            background: var(--accent-red);
+            border-color: var(--accent-red);
+            color: var(--bg-primary);
+        }
+
+        .option.incorrect .option-letter::before {
+            content: '✗';
+        }
+
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .explanation {
+            background: rgba(197, 134, 192, 0.1);
+            border: 1px solid var(--accent-purple);
+            border-left: 4px solid var(--accent-purple);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .explanation-title {
+            color: var(--accent-purple);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .explanation-text {
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--python-blue), var(--python-yellow));
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(75, 139, 190, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--python-blue);
+            background: rgba(75, 139, 190, 0.1);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results {
+            text-align: center;
+            padding: 2rem 0;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .results-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--python-blue), var(--python-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .results-score {
+            font-size: 5.5rem;
+            font-weight: 700;
+            margin: 2rem 0;
+            color: var(--python-yellow);
+            text-shadow: 0 0 60px rgba(255, 211, 67, 0.3);
+            line-height: 1;
+        }
+
+        .results-message {
+            font-size: 1.4rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+        }
+
+        .result-stat {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .result-stat:hover {
+            transform: translateY(-4px);
+            border-color: var(--python-blue);
+        }
+
+        .result-stat-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .result-stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .streak-celebration {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: linear-gradient(135deg, rgba(206, 145, 120, 0.2), rgba(244, 135, 113, 0.2));
+            padding: 1.25rem 2.5rem;
+            border-radius: 50px;
+            margin: 2rem 0;
+            border: 2px solid var(--accent-orange);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .streak-celebration .icon {
+            font-size: 2.5rem;
+            animation: flicker 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .completed-badge {
+            background: rgba(78, 201, 176, 0.15);
+            border: 2px solid var(--accent-green);
+            padding: 1.5rem 2.5rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            display: inline-block;
+        }
+
+        .completed-badge-title {
+            font-size: 1.2rem;
+            color: var(--accent-green);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .completed-badge-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .history-section {
+            animation: fadeIn 0.8s ease 0.6s backwards;
+            margin-top: 2rem;
+        }
+
+        .history-window {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .history-header {
+            background: var(--bg-tertiary);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-title {
+            font-size: 1.5rem;
+            color: var(--python-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .clear-history {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .clear-history:hover {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+            background: rgba(244, 135, 113, 0.1);
+        }
+
+        .history-content {
+            padding: 1.5rem;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .history-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--python-blue);
+            border-radius: 6px;
+            padding: 1.25rem 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            border-left-width: 6px;
+            transform: translateX(4px);
+            background: var(--bg-primary);
+        }
+
+        .history-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .history-date {
+            color: var(--python-yellow);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .history-details {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .history-score {
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-align: right;
+        }
+
+        .history-score.perfect { color: var(--accent-green); }
+        .history-score.good { color: var(--python-yellow); }
+        .history-score.fair { color: var(--accent-orange); }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+
+            .quiz-container {
+                padding: 1.5rem;
+            }
+
+            .question {
+                font-size: 1.1rem;
+            }
+
+            .results-score {
+                font-size: 4rem;
+            }
+
+            .stats-dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .results-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="python-logo">🐍</div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <span class="python-icon">🐍</span>
+                <span class="logo-text">Python Quiz</span>
+            </div>
+            <div class="tagline">Master Python one question at a time • <span class="version">Python 3.x</span></div>
+        </div>
+
+        <div class="stats-dashboard">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-label">Streak</div>
+                </div>
+                <div class="stat-value streak" id="streakDisplay">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-label">Total Score</div>
+                </div>
+                <div class="stat-value score" id="totalScoreDisplay">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat-value accuracy" id="accuracyDisplay">0%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">✓</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-value total" id="quizzesDisplay">0</div>
+            </div>
+        </div>
+
+        <div class="editor-window">
+            <div class="editor-tab">
+                <span>📄</span>
+                <span class="filename">daily_quiz.py</span>
+            </div>
+            <div class="quiz-container" id="quizContainer">
+                <!-- Quiz content will be inserted here -->
+            </div>
+        </div>
+
+        <div class="history-section">
+            <div class="history-window">
+                <div class="history-header">
+                    <h2 class="history-title">
+                        <span>📚</span>
+                        <span>Quiz History</span>
+                    </h2>
+                    <button class="clear-history" onclick="quiz.clearHistory()">Clear History</button>
+                </div>
+                <div class="history-content">
+                    <div class="history-list" id="historyList">
+                        <!-- History items will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const pythonQuestions = [
+            {
+                question: "What is the output of: print(type([]))?",
+                options: ["<class 'list'>", "<class 'array'>", "<class 'tuple'>", "<class 'dict'>"],
+                correct: 0,
+                difficulty: "beginner",
+                topic: "Data Types",
+                explanation: "In Python, [] creates an empty list, and type() returns <class 'list'>. Lists are one of Python's built-in mutable sequence types."
+            },
+            {
+                question: "Which method is used to add an element to the end of a list?",
+                options: ["add()", "append()", "insert()", "push()"],
+                correct: 1,
+                difficulty: "beginner",
+                topic: "Lists",
+                explanation: "The append() method adds a single element to the end of a list. It modifies the list in-place and returns None."
+            },
+            {
+                question: "What does 'self' represent in Python class methods?",
+                options: ["The class itself", "The instance of the class", "A global variable", "A static method"],
+                correct: 1,
+                difficulty: "beginner",
+                topic: "OOP",
+                explanation: "'self' is a reference to the current instance of the class. It's used to access variables and methods associated with the current object."
+            },
+            {
+                question: "What is the output of: print(3 * 'Python')?",
+                options: ["PythonPythonPython", "Python3", "9", "Error"],
+                correct: 0,
+                difficulty: "beginner",
+                topic: "Strings",
+                explanation: "In Python, the * operator on strings repeats the string. 3 * 'Python' results in 'PythonPythonPython'."
+            },
+            {
+                question: "Which of these is NOT a valid Python variable name?",
+                options: ["_variable", "variable1", "2variable", "variable_2"],
+                correct: 2,
+                difficulty: "beginner",
+                topic: "Syntax",
+                explanation: "Python variable names cannot start with a number. They must start with a letter or underscore, followed by letters, numbers, or underscores."
+            },
+            {
+                question: "What is the difference between '==' and 'is' in Python?",
+                options: [
+                    "They are the same",
+                    "'==' compares values, 'is' compares identity",
+                    "'is' compares values, '==' compares identity",
+                    "Both compare identity"
+                ],
+                correct: 1,
+                difficulty: "intermediate",
+                topic: "Operators",
+                explanation: "'==' checks if values are equal, while 'is' checks if two variables point to the same object in memory (identity comparison)."
+            },
+            {
+                question: "What does the enumerate() function do?",
+                options: [
+                    "Counts elements in a list",
+                    "Returns index and value pairs",
+                    "Sorts a list",
+                    "Reverses a sequence"
+                ],
+                correct: 1,
+                difficulty: "intermediate",
+                topic: "Built-in Functions",
+                explanation: "enumerate() adds a counter to an iterable and returns it as an enumerate object containing tuples of (index, value) pairs."
+            },
+            {
+                question: "What is a lambda function in Python?",
+                options: [
+                    "A regular function",
+                    "An anonymous inline function",
+                    "A class method",
+                    "A decorator"
+                ],
+                correct: 1,
+                difficulty: "intermediate",
+                topic: "Functions",
+                explanation: "Lambda functions are small anonymous functions defined with the lambda keyword. Syntax: lambda arguments: expression"
+            },
+            {
+                question: "Which data structure is used for LIFO (Last In First Out)?",
+                options: ["Queue", "List (used as stack)", "Dictionary", "Set"],
+                correct: 1,
+                difficulty: "intermediate",
+                topic: "Data Structures",
+                explanation: "Lists can be used as stacks with append() for push and pop() for pop operations, implementing LIFO behavior."
+            },
+            {
+                question: "What does the __init__ method do?",
+                options: [
+                    "Deletes an object",
+                    "Initializes object attributes",
+                    "Creates a class",
+                    "Imports modules"
+                ],
+                correct: 1,
+                difficulty: "intermediate",
+                topic: "OOP",
+                explanation: "__init__ is a constructor method that initializes object attributes when a new instance of a class is created."
+            },
+            {
+                question: "What is the output of: print(bool([]))?",
+                options: ["True", "False", "None", "Error"],
+                correct: 1,
+                difficulty: "intermediate",
+                topic: "Boolean Logic",
+                explanation: "Empty sequences (lists, tuples, strings, etc.) evaluate to False in Python. Non-empty sequences evaluate to True."
+            },
+            {
+                question: "What is list comprehension in Python?",
+                options: [
+                    "A way to compress lists",
+                    "A concise way to create lists",
+                    "A list method",
+                    "A type of loop"
+                ],
+                correct: 1,
+                difficulty: "intermediate",
+                topic: "List Comprehension",
+                explanation: "List comprehension provides a concise way to create lists. Syntax: [expression for item in iterable if condition]"
+            },
+            {
+                question: "What does the 'with' statement do?",
+                options: [
+                    "Creates a loop",
+                    "Manages context and resources",
+                    "Defines a function",
+                    "Imports modules"
+                ],
+                correct: 1,
+                difficulty: "intermediate",
+                topic: "Context Managers",
+                explanation: "The 'with' statement simplifies exception handling by encapsulating common preparation and cleanup tasks, especially for file operations."
+            },
+            {
+                question: "What is a decorator in Python?",
+                options: [
+                    "A design pattern",
+                    "A function that modifies another function",
+                    "A class attribute",
+                    "A module import"
+                ],
+                correct: 1,
+                difficulty: "advanced",
+                topic: "Decorators",
+                explanation: "Decorators are functions that take another function and extend its behavior without explicitly modifying it. They use the @decorator syntax."
+            },
+            {
+                question: "What is the Global Interpreter Lock (GIL)?",
+                options: [
+                    "A security feature",
+                    "A mutex that protects Python objects",
+                    "A debugging tool",
+                    "A package manager"
+                ],
+                correct: 1,
+                difficulty: "advanced",
+                topic: "Internals",
+                explanation: "The GIL is a mutex that protects access to Python objects, preventing multiple threads from executing Python bytecode at once."
+            },
+            {
+                question: "What does *args do in a function definition?",
+                options: [
+                    "Defines required arguments",
+                    "Allows variable number of arguments",
+                    "Creates a list",
+                    "Imports a module"
+                ],
+                correct: 1,
+                difficulty: "intermediate",
+                topic: "Functions",
+                explanation: "*args allows a function to accept any number of positional arguments, which are packed into a tuple."
+            },
+            {
+                question: "What is the difference between copy() and deepcopy()?",
+                options: [
+                    "No difference",
+                    "copy() creates shallow copy, deepcopy() creates deep copy",
+                    "deepcopy() is faster",
+                    "copy() works on dictionaries only"
+                ],
+                correct: 1,
+                difficulty: "advanced",
+                topic: "Copying",
+                explanation: "copy() creates a shallow copy (references to nested objects), while deepcopy() creates a completely independent copy including nested objects."
+            },
+            {
+                question: "What does yield do in Python?",
+                options: [
+                    "Stops execution",
+                    "Creates a generator",
+                    "Returns multiple values",
+                    "Imports modules"
+                ],
+                correct: 1,
+                difficulty: "advanced",
+                topic: "Generators",
+                explanation: "yield is used in generator functions to return values one at a time, suspending and resuming function execution while maintaining state."
+            },
+            {
+                question: "What is a dictionary comprehension?",
+                options: [
+                    "A way to compress dictionaries",
+                    "A concise way to create dictionaries",
+                    "A dictionary method",
+                    "A sorting technique"
+                ],
+                correct: 1,
+                difficulty: "intermediate",
+                topic: "Dictionaries",
+                explanation: "Dictionary comprehension creates dictionaries concisely. Syntax: {key: value for item in iterable}"
+            },
+            {
+                question: "What does the pass statement do?",
+                options: [
+                    "Exits a loop",
+                    "Does nothing (placeholder)",
+                    "Returns None",
+                    "Passes an argument"
+                ],
+                correct: 1,
+                difficulty: "beginner",
+                topic: "Control Flow",
+                explanation: "pass is a null operation - when executed, nothing happens. It's used as a placeholder where syntax requires a statement."
+            },
+            {
+                question: "What is the purpose of __str__ method?",
+                options: [
+                    "Converts object to integer",
+                    "Defines string representation of object",
+                    "Creates a new string",
+                    "Validates strings"
+                ],
+                correct: 1,
+                difficulty: "intermediate",
+                topic: "OOP",
+                explanation: "__str__ defines the 'informal' or nicely printable string representation of an object, used by str() and print()."
+            },
+            {
+                question: "What does the map() function do?",
+                options: [
+                    "Creates a dictionary",
+                    "Applies function to all items in iterable",
+                    "Finds an element",
+                    "Sorts items"
+                ],
+                correct: 1,
+                difficulty: "intermediate",
+                topic: "Functional Programming",
+                explanation: "map() applies a given function to all items in an iterable and returns a map object (an iterator)."
+            },
+            {
+                question: "What is the output of: print(10 // 3)?",
+                options: ["3.333", "3", "4", "3.0"],
+                correct: 1,
+                difficulty: "beginner",
+                topic: "Operators",
+                explanation: "The // operator performs floor division, returning the largest integer less than or equal to the division result. 10 // 3 = 3."
+            },
+            {
+                question: "What does the filter() function do?",
+                options: [
+                    "Removes duplicates",
+                    "Filters elements based on condition",
+                    "Sorts elements",
+                    "Maps elements"
+                ],
+                correct: 1,
+                difficulty: "intermediate",
+                topic: "Functional Programming",
+                explanation: "filter() constructs an iterator from elements of an iterable for which a function returns True."
+            },
+            {
+                question: "What is a tuple in Python?",
+                options: [
+                    "A mutable sequence",
+                    "An immutable sequence",
+                    "A dictionary",
+                    "A set"
+                ],
+                correct: 1,
+                difficulty: "beginner",
+                topic: "Data Types",
+                explanation: "A tuple is an immutable sequence type in Python, defined using parentheses (). Once created, its elements cannot be changed."
+            }
+        ];
+
+        class PythonQuiz {
+            constructor() {
+                this.currentQuestion = 0;
+                this.score = 0;
+                this.selectedAnswer = null;
+                this.questions = [];
+                this.totalQuestions = 10;
+                this.timeRemaining = 0;
+                this.timer = null;
+                this.answeredQuestions = 0;
+                this.correctAnswers = 0;
+                this.showingExplanation = false;
+                
+                this.init();
+            }
+
+            init() {
+                this.loadStats();
+                this.updateStatsDisplay();
+                this.loadHistory();
+                
+                if (this.canTakeQuiz()) {
+                    this.generateDailyQuestions();
+                    this.renderQuestion();
+                } else {
+                    this.showAlreadyCompleted();
+                }
+            }
+
+            getToday() {
+                const now = new Date();
+                return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            }
+
+            canTakeQuiz() {
+                const data = this.getData();
+                const today = this.getToday();
+                return !data.completedDates || !data.completedDates.includes(today);
+            }
+
+            getData() {
+                const data = localStorage.getItem('pythonQuizData');
+                return data ? JSON.parse(data) : {
+                    streak: 0,
+                    totalScore: 0,
+                    quizzesTaken: 0,
+                    totalCorrect: 0,
+                    totalAnswered: 0,
+                    completedDates: [],
+                    history: [],
+                    lastCompletedDate: null
+                };
+            }
+
+            saveData(data) {
+                localStorage.setItem('pythonQuizData', JSON.stringify(data));
+            }
+
+            loadStats() {
+                const data = this.getData();
+                this.updateStreak(data);
+            }
+
+            updateStreak(data) {
+                const today = this.getToday();
+                const yesterday = this.getYesterday();
+                
+                if (data.lastCompletedDate !== today && data.lastCompletedDate !== yesterday) {
+                    data.streak = 0;
+                    this.saveData(data);
+                }
+            }
+
+            getYesterday() {
+                const date = new Date();
+                date.setDate(date.getDate() - 1);
+                return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            }
+
+            updateStatsDisplay() {
+                const data = this.getData();
+                document.getElementById('streakDisplay').textContent = data.streak;
+                document.getElementById('totalScoreDisplay').textContent = data.totalScore;
+                document.getElementById('quizzesDisplay').textContent = data.quizzesTaken;
+                
+                const accuracy = data.totalAnswered > 0 
+                    ? Math.round((data.totalCorrect / data.totalAnswered) * 100)
+                    : 0;
+                document.getElementById('accuracyDisplay').textContent = accuracy + '%';
+            }
+
+            generateDailyQuestions() {
+                const today = this.getToday();
+                const seed = this.hashCode(today);
+                const shuffled = this.seededShuffle([...pythonQuestions], seed);
+                this.questions = shuffled.slice(0, this.totalQuestions);
+            }
+
+            hashCode(str) {
+                let hash = 0;
+                for (let i = 0; i < str.length; i++) {
+                    const char = str.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash;
+                }
+                return Math.abs(hash);
+            }
+
+            seededShuffle(array, seed) {
+                let currentIndex = array.length;
+                const random = () => {
+                    seed = (seed * 9301 + 49297) % 233280;
+                    return seed / 233280;
+                };
+
+                while (currentIndex !== 0) {
+                    const randomIndex = Math.floor(random() * currentIndex);
+                    currentIndex--;
+                    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+                }
+
+                return array;
+            }
+
+            renderQuestion() {
+                const container = document.getElementById('quizContainer');
+                const question = this.questions[this.currentQuestion];
+                
+                const progressPercent = (this.currentQuestion / this.totalQuestions) * 100;
+                const letters = ['A', 'B', 'C', 'D'];
+                
+                container.innerHTML = `
+                    <div class="progress-container">
+                        <div class="progress-info">
+                            <div class="question-number"># Question ${this.currentQuestion + 1}/${this.totalQuestions}</div>
+                            <div class="timer" id="timer">⏱ <span id="timerValue">0s</span></div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progressPercent}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="question-header">
+                        <div class="difficulty-badge difficulty-${question.difficulty}">${question.difficulty}</div>
+                        <div class="topic-tag">${question.topic}</div>
+                    </div>
+                    
+                    <div class="question">${question.question}</div>
+                    
+                    <div class="options" id="optionsContainer">
+                        ${question.options.map((option, index) => `
+                            <div class="option" data-index="${index}" onclick="quiz.selectAnswer(${index})">
+                                <div class="option-letter">${letters[index]}</div>
+                                <div class="option-text">${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-secondary" onclick="quiz.skipQuestion()">Skip Question</button>
+                        <button class="btn btn-primary" id="submitBtn" onclick="quiz.submitAnswer()" disabled>Submit Answer →</button>
+                    </div>
+                `;
+
+                this.selectedAnswer = null;
+                this.showingExplanation = false;
+                this.startTimer();
+            }
+
+            startTimer() {
+                this.timeRemaining = 0;
+                const timerEl = document.getElementById('timerValue');
+                
+                this.timer = setInterval(() => {
+                    this.timeRemaining++;
+                    if (timerEl) {
+                        timerEl.textContent = this.timeRemaining + 's';
+                    }
+                }, 1000);
+            }
+
+            stopTimer() {
+                if (this.timer) {
+                    clearInterval(this.timer);
+                    this.timer = null;
+                }
+            }
+
+            selectAnswer(index) {
+                if (this.showingExplanation) return;
+                
+                const options = document.querySelectorAll('.option');
+                options.forEach(opt => opt.classList.remove('selected'));
+                options[index].classList.add('selected');
+                
+                this.selectedAnswer = index;
+                document.getElementById('submitBtn').disabled = false;
+            }
+
+            submitAnswer() {
+                if (this.showingExplanation) {
+                    this.nextQuestion();
+                    return;
+                }
+
+                this.stopTimer();
+                const question = this.questions[this.currentQuestion];
+                const options = document.querySelectorAll('.option');
+                
+                options.forEach(opt => opt.classList.add('disabled'));
+                this.answeredQuestions++;
+                
+                const isCorrect = this.selectedAnswer === question.correct;
+                
+                if (isCorrect) {
+                    this.score++;
+                    this.correctAnswers++;
+                    options[this.selectedAnswer].classList.add('correct');
+                } else {
+                    if (this.selectedAnswer !== null) {
+                        options[this.selectedAnswer].classList.add('incorrect');
+                    }
+                    options[question.correct].classList.add('correct');
+                }
+
+                const container = document.getElementById('quizContainer');
+                const explanationDiv = document.createElement('div');
+                explanationDiv.className = 'explanation';
+                explanationDiv.innerHTML = `
+                    <div class="explanation-title">💡 Explanation</div>
+                    <div class="explanation-text">${question.explanation}</div>
+                `;
+                container.querySelector('.button-group').before(explanationDiv);
+
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.textContent = this.currentQuestion < this.totalQuestions - 1 ? 'Next Question →' : 'View Results 🎯';
+                submitBtn.disabled = false;
+                this.showingExplanation = true;
+            }
+
+            nextQuestion() {
+                this.currentQuestion++;
+                if (this.currentQuestion < this.totalQuestions) {
+                    this.renderQuestion();
+                } else {
+                    this.showResults();
+                }
+            }
+
+            skipQuestion() {
+                this.stopTimer();
+                this.answeredQuestions++;
+                this.nextQuestion();
+            }
+
+            showResults() {
+                const data = this.getData();
+                const today = this.getToday();
+                
+                if (data.lastCompletedDate === this.getYesterday()) {
+                    data.streak++;
+                } else {
+                    data.streak = 1;
+                }
+                
+                data.totalScore += this.score;
+                data.totalCorrect += this.correctAnswers;
+                data.totalAnswered += this.answeredQuestions;
+                data.quizzesTaken++;
+                data.lastCompletedDate = today;
+                
+                if (!data.completedDates) {
+                    data.completedDates = [];
+                }
+                data.completedDates.push(today);
+                
+                if (!data.history) {
+                    data.history = [];
+                }
+                
+                const percentage = (this.score / this.totalQuestions) * 100;
+                data.history.unshift({
+                    date: today,
+                    score: this.score,
+                    total: this.totalQuestions,
+                    percentage: percentage,
+                    accuracy: this.answeredQuestions > 0 
+                        ? Math.round((this.correctAnswers / this.answeredQuestions) * 100)
+                        : 0
+                });
+                
+                if (data.history.length > 20) {
+                    data.history = data.history.slice(0, 20);
+                }
+                
+                this.saveData(data);
+                this.updateStatsDisplay();
+                this.loadHistory();
+                
+                let message = '';
+                let emoji = '';
+                
+                if (percentage === 100) {
+                    message = 'Perfect! You\'re a Python expert! 🐍';
+                    emoji = '🏆';
+                } else if (percentage >= 80) {
+                    message = 'Excellent! Strong Python skills!';
+                    emoji = '🌟';
+                } else if (percentage >= 60) {
+                    message = 'Good work! Keep practicing!';
+                    emoji = '👍';
+                } else if (percentage >= 40) {
+                    message = 'Not bad! Review the basics!';
+                    emoji = '📚';
+                } else {
+                    message = 'Keep learning! Practice makes perfect!';
+                    emoji = '💪';
+                }
+                
+                const container = document.getElementById('quizContainer');
+                const accuracy = this.answeredQuestions > 0 
+                    ? Math.round((this.correctAnswers / this.answeredQuestions) * 100)
+                    : 0;
+                
+                container.innerHTML = `
+                    <div class="results">
+                        <div style="font-size: 5rem; margin-bottom: 1rem;">${emoji}</div>
+                        <h2 class="results-title">Quiz Complete!</h2>
+                        <div class="results-score">${this.score}/${this.totalQuestions}</div>
+                        <div class="results-message">${message}</div>
+                        
+                        ${data.streak > 1 ? `
+                            <div class="streak-celebration">
+                                <span class="icon">🔥</span>
+                                <span style="font-size: 1.4rem; font-weight: 700;">${data.streak} Day Streak!</span>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="results-stats">
+                            <div class="result-stat">
+                                <div class="result-stat-label">Accuracy</div>
+                                <div class="result-stat-value" style="color: var(--accent-green);">${accuracy}%</div>
+                            </div>
+                            <div class="result-stat">
+                                <div class="result-stat-label">Answered</div>
+                                <div class="result-stat-value" style="color: var(--python-blue);">${this.answeredQuestions}</div>
+                            </div>
+                            <div class="result-stat">
+                                <div class="result-stat-label">Correct</div>
+                                <div class="result-stat-value" style="color: var(--python-yellow);">${this.correctAnswers}</div>
+                            </div>
+                            <div class="result-stat">
+                                <div class="result-stat-label">Total Score</div>
+                                <div class="result-stat-value" style="color: var(--accent-green);">${data.totalScore}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="completed-badge">
+                            <div class="completed-badge-title">✓ Today's Python Quiz Complete</div>
+                            <div class="completed-badge-text">Come back tomorrow for new challenges!</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            showAlreadyCompleted() {
+                const data = this.getData();
+                const todayEntry = data.history.find(h => h.date === this.getToday());
+                
+                const container = document.getElementById('quizContainer');
+                container.innerHTML = `
+                    <div class="results">
+                        <div style="font-size: 5rem; margin-bottom: 1rem;">✅</div>
+                        <h2 class="results-title">Already Completed Today</h2>
+                        <p style="font-size: 1.15rem; color: var(--text-secondary); margin: 1.5rem 0;">You've already completed today's Python quiz!</p>
+                        
+                        ${todayEntry ? `
+                            <div class="results-score">${todayEntry.score}/${todayEntry.total}</div>
+                            <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem;">Your score from earlier today (${todayEntry.accuracy}% accuracy)</p>
+                        ` : ''}
+                        
+                        ${data.streak > 0 ? `
+                            <div class="streak-celebration">
+                                <span class="icon">🔥</span>
+                                <span style="font-size: 1.4rem; font-weight: 700;">${data.streak} Day Streak!</span>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="completed-badge">
+                            <div class="completed-badge-title">Come back tomorrow!</div>
+                            <div class="completed-badge-text">New Python questions await 🐍</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            loadHistory() {
+                const data = this.getData();
+                const historyList = document.getElementById('historyList');
+                
+                if (!data.history || data.history.length === 0) {
+                    historyList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No quiz history yet. Complete your first Python quiz!</p>';
+                    return;
+                }
+                
+                historyList.innerHTML = data.history.map(entry => {
+                    const date = new Date(entry.date);
+                    const formattedDate = date.toLocaleDateString('en-US', { 
+                        weekday: 'short',
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                    });
+                    
+                    const percentage = entry.percentage || ((entry.score / entry.total) * 100);
+                    let scoreClass = 'fair';
+                    if (percentage === 100) scoreClass = 'perfect';
+                    else if (percentage >= 70) scoreClass = 'good';
+                    
+                    return `
+                        <div class="history-item">
+                            <div class="history-info">
+                                <div class="history-date">${formattedDate}</div>
+                                <div class="history-details">
+                                    ${Math.round(percentage)}% accuracy • ${entry.accuracy || 0}% answered correctly
+                                </div>
+                            </div>
+                            <div class="history-score ${scoreClass}">${entry.score}/${entry.total}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            clearHistory() {
+                if (confirm('🗑️ Clear all quiz history?\n\nThis will reset your stats but keep today\'s completion and current streak.')) {
+                    const data = this.getData();
+                    const today = this.getToday();
+                    
+                    const todayEntry = data.history.find(h => h.date === today);
+                    
+                    const newData = {
+                        streak: data.streak,
+                        totalScore: 0,
+                        quizzesTaken: 0,
+                        totalCorrect: 0,
+                        totalAnswered: 0,
+                        completedDates: data.completedDates || [],
+                        history: todayEntry ? [todayEntry] : [],
+                        lastCompletedDate: data.lastCompletedDate
+                    };
+                    
+                    this.saveData(newData);
+                    this.updateStatsDisplay();
+                    this.loadHistory();
+                }
+            }
+        }
+
+        const quiz = new PythonQuiz();
+    </script>
+</body>
+</html>
